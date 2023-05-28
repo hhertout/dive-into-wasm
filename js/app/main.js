@@ -6,7 +6,7 @@ const world = World.new()
 const ctx = canvas.getContext("2d")
 
 const WORLD_WIDTH = world.width()
-const CELL_SIZE = 10
+const CELL_SIZE = 15
 
 canvas.height = WORLD_WIDTH * CELL_SIZE
 canvas.width = WORLD_WIDTH * CELL_SIZE
@@ -23,5 +23,4 @@ const drawWorld = () => {
     }
     ctx.stroke()
 }
-
 drawWorld()
