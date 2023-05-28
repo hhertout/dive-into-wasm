@@ -23,4 +23,16 @@ const drawWorld = () => {
     }
     ctx.stroke()
 }
+
+const drawSnake = () => {
+    const snakeIdx = world.snake_head_idx();
+    const x = snakeIdx % WORLD_WIDTH
+    const y = Math.floor(snakeIdx / WORLD_WIDTH)
+
+    ctx.beginPath()
+    ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
+    ctx.stroke()
+}
+
 drawWorld()
+drawSnake()
