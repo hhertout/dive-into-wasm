@@ -7,9 +7,11 @@ const ctx = canvas.getContext("2d")
 
 const WORLD_WIDTH = world.width()
 const CELL_SIZE = 15
+const SPEED_GAME = 500
 
 canvas.height = WORLD_WIDTH * CELL_SIZE
 canvas.width = WORLD_WIDTH * CELL_SIZE
+
 const drawWorld = () => {
     ctx.beginPath()
 
@@ -36,3 +38,10 @@ const drawSnake = () => {
 
 drawWorld()
 drawSnake()
+
+setInterval(() => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    drawWorld()
+    drawSnake()
+    world.update()
+}, SPEED_GAME)
