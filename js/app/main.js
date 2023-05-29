@@ -1,18 +1,26 @@
 import { World } from "../../pkg";
+import { Game } from "./Game";
 
 const canvas = document.getElementById("wasm")
-const world = World.new()
+if(!canvas) throw Error("Invalid canvas id")
 
 const ctx = canvas.getContext("2d")
 
-const WORLD_WIDTH = world.width()
+const WORLD_WIDTH = 16 
 const CELL_SIZE = 15
-const SPEED_GAME = 500
+const SPEED_GAME_IDX = 3
 
+//const game = new Game(canvas)
+//game.start()
+
+const snakeStartIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH)
+
+const world = World.new(WORLD_WIDTH, snakeStartIndex)
 canvas.height = WORLD_WIDTH * CELL_SIZE
 canvas.width = WORLD_WIDTH * CELL_SIZE
 
 const drawWorld = () => {
+    if (!ctx) return
     ctx.beginPath()
 
     for (let x = 0; x < WORLD_WIDTH + 1; x++) {
@@ -27,6 +35,7 @@ const drawWorld = () => {
 }
 
 const drawSnake = () => {
+    if (!ctx) return
     const snakeIdx = world.snake_head_idx();
     const x = snakeIdx % WORLD_WIDTH
     const y = Math.floor(snakeIdx / WORLD_WIDTH)
@@ -36,12 +45,20 @@ const drawSnake = () => {
     ctx.stroke()
 }
 
-drawWorld()
-drawSnake()
-
-setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+const paint = () => {
     drawWorld()
     drawSnake()
-    world.update()
-}, SPEED_GAME)
+}
+
+const update = () => {
+    if (!ctx) return
+    setTimeout(() => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        paint()
+        world.update()
+        requestAnimationFrame(update)
+    }, 1000 / SPEED_GAME_IDX)
+}
+
+paint()
+update()
