@@ -1,3 +1,4 @@
+use core::panic;
 use std::vec;
 
 use wasm_bindgen::prelude::*;
@@ -7,8 +8,9 @@ use wasm_bindgen::prelude::*;
 #[global_allocator]
 static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
+#[wasm_bindgen]
 #[derive(PartialEq)]
-enum Direction {
+pub enum Direction {
     Up,
     Right,
     Down,
@@ -57,10 +59,14 @@ impl World {
         self.snake.body[0].0
     }
 
+    fn set_snake_head(&mut self, idx: usize) {
+        self.snake.body[0].0 = idx;
+    }
+
     pub fn update(&mut self) {
         let snake_idx: usize = self.snake_head_idx();
 
-        let (row, col) = (snake_idx / self.width, snake_idx % self.width);
+        let (row, col) = self.index_to_cell(snake_idx);
         let (row, col) = match self.snake.direction {
             Direction::Right => (row, (col + 1) % self.width),
             Direction::Left => {
@@ -74,10 +80,19 @@ impl World {
             Direction::Down => ((row + 1) % self.width, col),
         };
 
-        self.snake.body[0].0 = self.cell_to_index(row, col);
+        let new_idx: usize = self.cell_to_index(row, col);
+        self.set_snake_head(new_idx)
     }
 
-    pub fn cell_to_index(&self, row: usize, col: usize) -> usize {
+    pub fn set_direction(&mut self, direction: Direction) {
+        self.snake.direction = direction;
+    }
+
+    fn cell_to_index(&self, row: usize, col: usize) -> usize {
         (row * self.width) + col
+    }
+
+    fn index_to_cell(&self, idx: usize) -> (usize, usize) {
+        (idx / self.width, idx % self.width)
     }
 }

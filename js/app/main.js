@@ -1,14 +1,14 @@
-import { World } from "../../pkg";
+import { Direction, World } from "../../pkg";
 import { Game } from "./Game";
 
 const canvas = document.getElementById("wasm")
-if(!canvas) throw Error("Invalid canvas id")
+if (!canvas) throw Error("Invalid canvas id")
 
 const ctx = canvas.getContext("2d")
 
-const WORLD_WIDTH = 16 
+const WORLD_WIDTH = 16
 const CELL_SIZE = 15
-const SPEED_GAME_IDX = 3
+const SPEED_GAME_IDX = 10
 
 //const game = new Game(canvas)
 //game.start()
@@ -18,6 +18,23 @@ const snakeStartIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH)
 const world = World.new(WORLD_WIDTH, snakeStartIndex)
 canvas.height = WORLD_WIDTH * CELL_SIZE
 canvas.width = WORLD_WIDTH * CELL_SIZE
+
+document.addEventListener('keydown', (e) => {
+    switch (e.code) {
+        case "ArrowLeft":
+            world.set_direction(Direction.Left)
+            break;
+        case "ArrowRight":
+            world.set_direction(Direction.Right)
+            break;
+        case "ArrowDown":
+            world.set_direction(Direction.Down)
+            break;
+        case "ArrowUp":
+            world.set_direction(Direction.Up)
+            break;
+    }
+})
 
 const drawWorld = () => {
     if (!ctx) return
