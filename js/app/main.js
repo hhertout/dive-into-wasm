@@ -1,5 +1,5 @@
 import { Direction, World } from "../../pkg";
-import { Game } from "./Game";
+import { memory } from "../../pkg/index_bg.wasm";
 
 const canvas = document.getElementById("wasm")
 if (!canvas) throw Error("Invalid canvas id")
@@ -18,6 +18,15 @@ const snakeStartIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH)
 const world = World.new(WORLD_WIDTH, snakeStartIndex)
 canvas.height = WORLD_WIDTH * CELL_SIZE
 canvas.width = WORLD_WIDTH * CELL_SIZE
+
+const snakeCellsPtr = world.snake_cells()
+const snakeLen = world.snake_length()
+
+const snakeCells = new Uint32Array(
+    memory.buffer,
+    snakeCellsPtr,
+    snakeLen
+)
 
 document.addEventListener('keydown', (e) => {
     switch (e.code) {
