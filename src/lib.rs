@@ -75,11 +75,19 @@ impl World {
         let (row, col) = match self.snake.direction {
             Direction::Right => (row, (col + 1) % self.width),
             Direction::Left => {
-                let next_col: usize = if col == 0 { self.width - 1 } else { col - 1 };
+                let next_col: usize = if col == 0 { 
+                    self.width - 1 
+                } else { 
+                    col - 1 
+                };
                 (row, next_col)
             }
             Direction::Up => {
-                let next_row: usize = if row == 0 { self.width - 1 } else { row - 1 };
+                let next_row: usize = if row == 0 {
+                    self.width - 1 
+                } else { 
+                    row - 1 
+                };
                 (next_row, col)
             }
             Direction::Down => ((row + 1) % self.width, col),
