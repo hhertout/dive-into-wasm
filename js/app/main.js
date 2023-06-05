@@ -78,7 +78,7 @@ const update = () => {
     setTimeout(() => {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         paint();
-        world.update();
+        world.step();
         requestAnimationFrame(update);
     }, 1000 / SPEED_GAME_IDX);
 };

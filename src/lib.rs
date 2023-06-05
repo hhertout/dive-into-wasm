@@ -24,7 +24,7 @@ struct Snake {
 
 impl Snake {
     fn new(spawn_index: usize, size: usize) -> Snake {
-        let mut body = vec!();
+        let mut body = vec![];
         for i in 0..size {
             body.push(SnakeCell(spawn_index - i));
         }
@@ -64,49 +64,25 @@ impl World {
         self.snake.body[0].0
     }
 
-    fn set_snake_head(&mut self, idx: usize) {
-        self.snake.body[0].0 = idx;
+    pub fn step(&mut self) {
+        let next_cell: SnakeCell = self.gen_next_snake_cell();
+        self.snake.body[0] = next_cell;
     }
 
-    pub fn update(&mut self) {
+    fn gen_next_snake_cell(&self) -> SnakeCell {
         let snake_idx: usize = self.snake_head_idx();
+        let row = snake_idx / self.width;
 
-        let (row, col) = self.index_to_cell(snake_idx);
-        let (row, col) = match self.snake.direction {
-            Direction::Right => (row, (col + 1) % self.width),
-            Direction::Left => {
-                let next_col: usize = if col == 0 { 
-                    self.width - 1 
-                } else { 
-                    col - 1 
-                };
-                (row, next_col)
-            }
-            Direction::Up => {
-                let next_row: usize = if row == 0 {
-                    self.width - 1 
-                } else { 
-                    row - 1 
-                };
-                (next_row, col)
-            }
-            Direction::Down => ((row + 1) % self.width, col),
+        return match self.snake.direction {
+            Direction::Right => SnakeCell((row * self.width) + (snake_idx + 1) % self.width),
+            Direction::Left => SnakeCell((row * self.width) + (snake_idx - 1) % self.width),
+            Direction::Up => SnakeCell((snake_idx - self.width) % self.size),
+            Direction::Down => SnakeCell((snake_idx + self.width) % self.size),
         };
-
-        let new_idx: usize = self.cell_to_index(row, col);
-        self.set_snake_head(new_idx)
     }
 
     pub fn set_direction(&mut self, direction: Direction) {
         self.snake.direction = direction;
-    }
-
-    fn cell_to_index(&self, row: usize, col: usize) -> usize {
-        (row * self.width) + col
-    }
-
-    fn index_to_cell(&self, idx: usize) -> (usize, usize) {
-        (idx / self.width, idx % self.width)
     }
 
     pub fn snake_cells(&self) -> *const SnakeCell {
