@@ -57,10 +57,11 @@ const drawSnake = () => {
         world.snake_length(),
     )
 
-    snakeCells.forEach(cells_id => {
+    snakeCells.forEach((cells_id, index) => {
         const x = cells_id % WORLD_WIDTH;
         const y = Math.floor(cells_id / WORLD_WIDTH);
 
+        ctx.fillStyle = index === 0 ? '#7878db' : "#333333"
         ctx.beginPath();
         ctx.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
     })
