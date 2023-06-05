@@ -36,19 +36,29 @@ export class Game {
 
     drawSnake() {
         if (!this.ctx) return
-        const snakeIdx = this.world.snake_head_idx();
-        const x = snakeIdx % this.WORLD_WIDTH
-        const y = Math.floor(snakeIdx / this.WORLD_WIDTH)
 
-        this.ctx.beginPath()
-        this.ctx.fillRect(
-            x * this.CELL_SIZE,
-            y * this.CELL_SIZE,
-            this.CELL_SIZE,
-            this.CELL_SIZE
+        const snakeCells = new Uint32Array(
+            wasm.memory.buffer,
+            world.snake_cells(),
+            world.snake_length(),
         )
+
+        snakeCells.forEach(cell => {
+            const snakeIdx = this.world.snake_head_idx();
+            const x = snakeIdx % this.WORLD_WIDTH
+            const y = Math.floor(snakeIdx / this.WORLD_WIDTH)
+
+            this.ctx.beginPath()
+            this.ctx.fillRect(
+                x * this.CELL_SIZE,
+                y * this.CELL_SIZE,
+                this.CELL_SIZE,
+                this.CELL_SIZE
+            )
+        })
         this.ctx.stroke()
     }
+
     paint() {
         this.drawWorld()
         this.drawSnake()
